@@ -16,7 +16,6 @@ public sealed class Startup
         
     public void ConfigureServices(IServiceCollection services)
     {
-
         services.AddControllers();
         services.AddSwaggerGen(c =>
         {
@@ -24,6 +23,10 @@ public sealed class Startup
         });
         services.Configure<DatabasesConfiguration>(Configuration.GetSection("Databases"));
         services.AddScoped<IUsersService, UsersService>();
+        services.AddMediatR(configuration =>
+        {
+            configuration.RegisterServicesFromAssembly(typeof(Startup).Assembly);
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
