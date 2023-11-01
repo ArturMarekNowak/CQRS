@@ -1,5 +1,5 @@
 ﻿using Cqrs.Models;
-using Cqrs.Models.CreateUserRequest;
+using Cqrs.Models.Requests;
 using Cqrs.Models.Responses;
 
 namespace Cqrs.Services.Interfaces;

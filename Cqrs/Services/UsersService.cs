@@ -1,5 +1,5 @@
 ﻿using Cqrs.Models;
-using Cqrs.Models.CreateUserRequest;
+using Cqrs.Models.Requests;
 using Cqrs.Models.Responses;
 using Cqrs.Services.Interfaces;
 using Microsoft.Extensions.Options;

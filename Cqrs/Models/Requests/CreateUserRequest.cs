@@ -1,3 +1,3 @@
-﻿namespace Cqrs.Models.CreateUserRequest;
+﻿namespace Cqrs.Models.Requests;
 
 public sealed record CreateUserRequest(string Name, string Surname, string Email);

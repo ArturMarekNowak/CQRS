@@ -1,4 +1,4 @@
-﻿using Cqrs.Models.CreateUserRequest;
+﻿using Cqrs.Models.Requests;
 using Cqrs.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

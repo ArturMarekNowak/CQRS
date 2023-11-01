@@ -1,18 +1,19 @@
-﻿using MongoDB.Bson;
+﻿using Cqrs.Models.Requests;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Cqrs.Models;
 
 public sealed class User
 {
-    public User(CreateUserRequest.CreateUserRequest createUserRequest)
+    public User(CreateUserRequest createUserRequest)
     {
         Name = createUserRequest.Name;
         Surname = createUserRequest.Surname;
         Email = createUserRequest.Email;
     }
     
-    public User(string id, CreateUserRequest.CreateUserRequest createUserRequest)
+    public User(string id, CreateUserRequest createUserRequest)
     {
         Id = id;
         Name = createUserRequest.Name;
