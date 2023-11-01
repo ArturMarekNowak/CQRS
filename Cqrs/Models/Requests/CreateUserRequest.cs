@@ -1,3 +1,6 @@
-﻿namespace Cqrs.Models.Requests;
+﻿using Cqrs.Models.Responses;
+using MediatR;
 
-public sealed record CreateUserRequest(string Name, string Surname, string Email);
+namespace Cqrs.Models.Requests;
+
+public sealed record CreateUserRequest(string Name, string Surname, string Email) : IRequest<CreateUserResponse>;

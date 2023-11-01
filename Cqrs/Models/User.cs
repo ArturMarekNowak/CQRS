@@ -13,12 +13,12 @@ public sealed class User
         Email = createUserRequest.Email;
     }
     
-    public User(string id, CreateUserRequest createUserRequest)
+    public User(UpdateUserRequest updateUserRequest)
     {
-        Id = id;
-        Name = createUserRequest.Name;
-        Surname = createUserRequest.Surname;
-        Email = createUserRequest.Email;
+        Id = updateUserRequest.Id;
+        Name = updateUserRequest.User.Name;
+        Surname = updateUserRequest.User.Surname;
+        Email = updateUserRequest.User.Email;
     }
     
     [BsonId]

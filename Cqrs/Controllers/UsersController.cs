@@ -1,60 +1,63 @@
 ﻿using Cqrs.Models.Requests;
-using Cqrs.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cqrs.Controllers;
 
 [ApiController]
-[Route("users")]
 public sealed class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
-    private readonly IUsersService _usersService;
+    private readonly IMediator _mediator;
 
     public UsersController(ILogger<UsersController> logger,
-        IUsersService usersService)
+        IMediator mediator)
     {
         _logger = logger;
-        _usersService = usersService;
+        _mediator = mediator;
     }
 
-    [HttpGet]
+    [HttpGet("users")]
     public async Task<IActionResult> GetUsersAsync()
     {
-        var users = await _usersService.GetAllUsersAsync();
+        var request = new GetAllUsersRequest();
+        var response = await _mediator.Send(request);
         
-        return Ok(users);
+        return Ok(response.Users);
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("users/{id}")]
     public async Task<IActionResult> GetUserAsync(string id)
     {
-        var users = await _usersService.GetUserAsync(id);
+        var request = new GetUserRequest(id);
+        var response = await _mediator.Send(request);
         
-        return Ok(users);
+        return Ok(response.User);
     }
     
-    [HttpPost]
+    [HttpPost("users")]
     public async Task<IActionResult> CreateUserAsync(CreateUserRequest user)
     {
-        var createUserResponse = await _usersService.CreateUserAsync(user);
+        var response = await _mediator.Send(user);
         
-        return Ok(createUserResponse);
+        return Ok(response.Id);
     }
     
-    [HttpPut("{id}")]
+    [HttpPut("users/{id}")]
     public async Task<IActionResult> UpdateUserAsync(string id, CreateUserRequest user)
     {
-        var users = await _usersService.UpdateUserAsync(id, user);
+        var request = new UpdateUserRequest(id, user);
+        var response = await _mediator.Send(request);
         
-        return Ok(users);
+        return Ok(response.User);
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("users/{id}")]
     public async Task<IActionResult> DeleteUserAsync(string id)
     {
-        await _usersService.DeleteUserAsync(id);
-        
+        var request = new DeleteUserRequest(id); 
+        var response = await _mediator.Send(request);
+
         return NoContent();
     }
 }

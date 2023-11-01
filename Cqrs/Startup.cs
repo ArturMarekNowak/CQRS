@@ -1,6 +1,4 @@
 using Cqrs.Models;
-using Cqrs.Services;
-using Cqrs.Services.Interfaces;
 using Microsoft.OpenApi.Models;
 
 namespace Cqrs;
@@ -22,7 +20,6 @@ public sealed class Startup
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cqrs" });
         });
         services.Configure<DatabasesConfiguration>(Configuration.GetSection("Databases"));
-        services.AddScoped<IUsersService, UsersService>();
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(typeof(Startup).Assembly);
