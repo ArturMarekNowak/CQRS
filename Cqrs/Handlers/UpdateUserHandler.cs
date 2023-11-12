@@ -18,12 +18,10 @@ public sealed class UpdateUserHandler : IRequestHandler<UpdateUserRequest, Updat
         _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
     }
     
-    public async Task<UpdateUserResponse> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
+    public Task<UpdateUserResponse> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
     {
-        var updatedUser = new User(request);
+        var updatedUser = _usersCollection.FindOneAndReplace(x => x.Id == request.Id, new User(request), cancellationToken: cancellationToken);
         
-        await _usersCollection.ReplaceOneAsync(x => x.Id == updatedUser.Id, updatedUser, cancellationToken: cancellationToken);
-
-        return new UpdateUserResponse(updatedUser);
+        return Task.FromResult(new UpdateUserResponse(updatedUser));
     }
 }

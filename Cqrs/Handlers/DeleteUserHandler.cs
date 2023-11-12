@@ -20,7 +20,7 @@ public sealed class DeleteUserHandler : IRequestHandler<DeleteUserRequest, Delet
     
     public async Task<DeleteUserResponse> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
     {
-        await _usersCollection.DeleteOneAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
-        return new DeleteUserResponse();
+        var deletedUser = await _usersCollection.FindOneAndDeleteAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+        return new DeleteUserResponse(deletedUser);
     }
 }

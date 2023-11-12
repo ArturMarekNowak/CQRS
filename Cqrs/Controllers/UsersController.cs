@@ -25,16 +25,16 @@ public sealed class UsersController : ControllerBase
         
         return Ok(response.Users);
     }
-    
+
     [HttpGet("users/{id}")]
     public async Task<IActionResult> GetUserAsync(string id)
     {
         var request = new GetUserRequest(id);
         var response = await _mediator.Send(request);
-        
-        return Ok(response.User);
+
+        return response.User is null ? NotFound() : Ok(response.User);
     }
-    
+
     [HttpPost("users")]
     public async Task<IActionResult> CreateUserAsync(CreateUserRequest user)
     {
@@ -49,7 +49,7 @@ public sealed class UsersController : ControllerBase
         var request = new UpdateUserRequest(id, user);
         var response = await _mediator.Send(request);
         
-        return Ok(response.User);
+        return response.User is null ? NotFound() : Ok(response.User);
     }
     
     [HttpDelete("users/{id}")]
@@ -58,6 +58,6 @@ public sealed class UsersController : ControllerBase
         var request = new DeleteUserRequest(id); 
         var response = await _mediator.Send(request);
 
-        return NoContent();
+        return response.User is null ? NotFound() : Ok(response.User);
     }
 }
