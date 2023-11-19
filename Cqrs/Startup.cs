@@ -5,7 +5,7 @@ namespace Cqrs;
 
 public sealed class Startup
 {
-    public IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
         
     public Startup(IConfiguration configuration)
     {
