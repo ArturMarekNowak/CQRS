@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Cqrs.Models.Requests;
 
-public sealed record UpdateUserRequest(string Id, CreateUserRequest User) : IRequest<UpdateUserResponse>;
+public sealed record UpdateUserRequest(string Id, CreateOrUpdateUserRequest CreateOrUpdateUserRequest) : IRequest<UpdateUserResponse>;

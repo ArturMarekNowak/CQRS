@@ -7,7 +7,7 @@ using MongoDB.Driver;
 
 namespace Cqrs.Handlers;
 
-public sealed class CreateUserHandler : IRequestHandler<CreateUserRequest, CreateUserResponse>
+public sealed class CreateUserHandler : IRequestHandler<CreateOrUpdateUserRequest, CreateUserResponse>
 {
     private readonly IMongoCollection<User> _usersCollection;
 
@@ -18,9 +18,9 @@ public sealed class CreateUserHandler : IRequestHandler<CreateUserRequest, Creat
         _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
     }
     
-    public async Task<CreateUserResponse> Handle(CreateUserRequest createUserRequest, CancellationToken cancellationToken)
+    public async Task<CreateUserResponse> Handle(CreateOrUpdateUserRequest createOrUpdateUserRequest, CancellationToken cancellationToken)
     {
-        var newUser = new User(createUserRequest);
+        var newUser = new User(createOrUpdateUserRequest);
         
         await _usersCollection.InsertOneAsync(newUser, cancellationToken: cancellationToken);
 

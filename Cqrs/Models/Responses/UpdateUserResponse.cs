@@ -1,3 +1,3 @@
 ﻿namespace Cqrs.Models.Responses;
 
-public sealed record UpdateUserResponse(User User);
+public sealed record UpdateUserResponse(User? User);

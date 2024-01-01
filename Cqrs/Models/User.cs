@@ -6,19 +6,27 @@ namespace Cqrs.Models;
 
 public sealed class User
 {
-    public User(CreateUserRequest createUserRequest)
+    public User(CreateOrUpdateUserRequest createOrUpdateUserRequest)
     {
-        Name = createUserRequest.Name;
-        Surname = createUserRequest.Surname;
-        Email = createUserRequest.Email;
+        Name = createOrUpdateUserRequest.Name;
+        Surname = createOrUpdateUserRequest.Surname;
+        Email = createOrUpdateUserRequest.Email;
     }
     
     public User(UpdateUserRequest updateUserRequest)
     {
         Id = updateUserRequest.Id;
-        Name = updateUserRequest.User.Name;
-        Surname = updateUserRequest.User.Surname;
-        Email = updateUserRequest.User.Email;
+        Name = updateUserRequest.CreateOrUpdateUserRequest.Name;
+        Surname = updateUserRequest.CreateOrUpdateUserRequest.Surname;
+        Email = updateUserRequest.CreateOrUpdateUserRequest.Email;
+    }
+
+    public User(UpdateUserFieldsWithIdRequest updateUserFieldsWithIdRequest)
+    {
+        Id = updateUserFieldsWithIdRequest.Id;
+        Name = updateUserFieldsWithIdRequest.Name;
+        Surname = updateUserFieldsWithIdRequest.Surname;
+        Email = updateUserFieldsWithIdRequest.Email;
     }
     
     [BsonId]

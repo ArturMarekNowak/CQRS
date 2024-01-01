@@ -36,7 +36,7 @@ public sealed class UsersController : ControllerBase
     }
 
     [HttpPost("users")]
-    public async Task<IActionResult> CreateUserAsync(CreateUserRequest user)
+    public async Task<IActionResult> CreateUserAsync(CreateOrUpdateUserRequest user)
     {
         var response = await _mediator.Send(user);
         
@@ -44,9 +44,18 @@ public sealed class UsersController : ControllerBase
     }
     
     [HttpPut("users/{id}")]
-    public async Task<IActionResult> UpdateUserAsync(string id, CreateUserRequest user)
+    public async Task<IActionResult> UpdateUserAsync(string id, CreateOrUpdateUserRequest user)
     {
         var request = new UpdateUserRequest(id, user);
+        var response = await _mediator.Send(request);
+        
+        return response.User is null ? NotFound() : Ok(response.User);
+    }
+    
+    [HttpPatch("users/{id}")]
+    public async Task<IActionResult> UpdateUserFieldsAsync(string id, UpdateUserFieldsRequest user)
+    {
+        var request = new UpdateUserFieldsWithIdRequest(id, user);
         var response = await _mediator.Send(request);
         
         return response.User is null ? NotFound() : Ok(response.User);

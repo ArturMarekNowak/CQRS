@@ -9,7 +9,7 @@ namespace Cqrs.Handlers;
 
 public sealed class UpdateUserHandler : IRequestHandler<UpdateUserRequest, UpdateUserResponse>
 {
-    private static IMongoCollection<User> _usersCollection;
+    private static IMongoCollection<User>? _usersCollection;
     
     public UpdateUserHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
     {
