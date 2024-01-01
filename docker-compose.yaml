@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  service-users:
+    image: ${DOCKER_REGISTRY-}webapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+
+  database-users-replica-0:
+    image: mongo:7.0
+    command: ["--replSet", "database-users-replicaset", "--bind_ip_all", "--port", "27018"]
+    ports:
+      - 27018:27018
+    volumes:
+      - "D:/MongoDb/database-users-replica-0-data:/MongoDb/data/db"
+      - "D:/MongoDb/database-users-replica-0-config:/MongoDb/data/configdb"
+
+  database-users-replica-1:
+    image: mongo:7.0
+    command: ["--replSet", "database-users-replicaset", "--bind_ip_all", "--port", "27019"]
+    ports:
+      - 27019:27019
+    volumes:
+      - "D:/MongoDb/database-users-replica-1-data:/MongoDb/data/db"
+      - "D:/MongoDb/database-users-replica-1-config:/MongoDb/data/configdb"
+
+  database-users-replica-2:
+    image: mongo:7.0
+    command: ["--replSet", "database-users-replicaset", "--bind_ip_all", "--port", "27020"]
+    ports:
+      - 27020:27020
+    volumes:
+      - "D:/MongoDb/database-users-replica-2-data:/MongoDb/data/db"
+      - "D:/MongoDb/database-users-replica-2-config:/MongoDb/data/configdb"
+
+volumes:
+  database-users-replica-0-data:
+  database-users-replica-1-data:
+  database-users-replica-2-data:
+  database-users-replica-0-config:
+  database-users-replica-1-config:
+  database-users-replica-2-config:
