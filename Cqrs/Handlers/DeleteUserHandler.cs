@@ -1,26 +1,29 @@
-﻿using Cqrs.Models;
-using Cqrs.Models.Requests;
+﻿using Cqrs.Database.Contexts;
+using Cqrs.Models.Queries;
 using Cqrs.Models.Responses;
 using MediatR;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 
 namespace Cqrs.Handlers;
 
-public sealed class DeleteUserHandler : IRequestHandler<DeleteUserRequest, DeleteUserResponse>
+public sealed class DeleteUserHandler : IRequestHandler<DeleteUserCommand, DeleteUserResponse>
 {
-    private readonly IMongoCollection<User> _usersCollection;
+    private readonly UsersReadWriteDbContext _usersReadWriteDbContext;
 
-    public DeleteUserHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
+    public DeleteUserHandler(UsersReadWriteDbContext usersReadWriteDbContext)
     {
-        var mongoClient = new MongoClient(databaseConfiguration.Value.UsersDb!.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.UsersDb.DatabaseName);
-        _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
+        _usersReadWriteDbContext = usersReadWriteDbContext;
     }
     
-    public async Task<DeleteUserResponse> Handle(DeleteUserRequest request, CancellationToken cancellationToken)
+    public async Task<DeleteUserResponse> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
     {
-        var deletedUser = await _usersCollection.FindOneAndDeleteAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
-        return new DeleteUserResponse(deletedUser);
+        var userToDelete = _usersReadWriteDbContext.Users.FirstOrDefault(u => u.Id == command.Id);
+        
+        if(userToDelete is null)
+            return new DeleteUserResponse(null);
+        
+        var deletedUser = _usersReadWriteDbContext.Users.Remove(userToDelete);
+        await _usersReadWriteDbContext.SaveChangesAsync(cancellationToken);
+        
+        return new DeleteUserResponse(deletedUser.Entity);
     }
 }

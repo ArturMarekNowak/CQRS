@@ -1,28 +1,25 @@
-﻿using Cqrs.Models;
-using Cqrs.Models.Requests;
+﻿using Cqrs.Database.Contexts;
+using Cqrs.Models;
+using Cqrs.Models.Commands;
 using Cqrs.Models.Responses;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 
 namespace Cqrs.Handlers;
 
-public sealed class GetUserHandler : IRequestHandler<GetUserRequest, GetUserResponse>
+public sealed class GetUserHandler : IRequestHandler<GetUserQuery, GetUserResponse>
 {
-    private readonly IMongoCollection<User> _usersCollection;
+    private readonly UsersReadOnlyDbContext _usersReadOnlyDbContext;
 
-    public GetUserHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
+    public GetUserHandler(UsersReadOnlyDbContext usersReadOnlyDbContext)
     {
-        var mongoClient = new MongoClient(databaseConfiguration.Value.UsersDb!.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.UsersDb.DatabaseName);
-        _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
+        _usersReadOnlyDbContext = usersReadOnlyDbContext;
     }
     
-    public async Task<GetUserResponse> Handle(GetUserRequest request, CancellationToken cancellationToken)
+    public async Task<GetUserResponse> Handle(GetUserQuery query, CancellationToken cancellationToken)
     {
-        var user = await _usersCollection
-            .Find(u => u.Id == request.Id)
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        var user = await _usersReadOnlyDbContext.Users.FirstOrDefaultAsync(u => u.Id == query.Id, cancellationToken: cancellationToken);
         
         return new GetUserResponse(user);
     }

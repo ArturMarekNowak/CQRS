@@ -1,25 +1,24 @@
-﻿using Cqrs.Models;
-using Cqrs.Models.Requests;
+﻿using Cqrs.Database.Contexts;
+using Cqrs.Models.Commands;
 using Cqrs.Models.Responses;
 using MediatR;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cqrs.Handlers;
 
-public sealed class GetAllUsersHandler : IRequestHandler<GetAllUsersRequest, GetAllUsersResponse>
+public sealed class GetAllUsersHandler : IRequestHandler<GetAllUsersQuery, GetAllUsersResponse>
 {
-    private readonly IMongoCollection<User> _usersCollection;
-    
-    public GetAllUsersHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
+    private readonly UsersReadOnlyDbContext _usersReadOnlyDbContext;
+
+    public GetAllUsersHandler(UsersReadOnlyDbContext usersReadOnlyDbContext)
     {
-        var mongoClient = new MongoClient(databaseConfiguration.Value.UsersDb!.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.UsersDb.DatabaseName);
-        _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
+        _usersReadOnlyDbContext = usersReadOnlyDbContext;
     }
     
-    public async Task<GetAllUsersResponse> Handle(GetAllUsersRequest request, CancellationToken cancellationToken)
+    public async Task<GetAllUsersResponse> Handle(GetAllUsersQuery query, CancellationToken cancellationToken)
     {
-        return new GetAllUsersResponse(await _usersCollection.Find(_ => true).ToListAsync(cancellationToken: cancellationToken));
+        var users = await _usersReadOnlyDbContext.Users.ToListAsync(cancellationToken);
+        
+        return new GetAllUsersResponse(users);
     }
 }
