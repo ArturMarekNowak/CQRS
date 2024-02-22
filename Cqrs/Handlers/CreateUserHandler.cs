@@ -1,29 +1,27 @@
-﻿using Cqrs.Models;
-using Cqrs.Models.Requests;
+﻿using Cqrs.Database.Contexts;
+using Cqrs.Models;
+using Cqrs.Models.Queries;
 using Cqrs.Models.Responses;
 using MediatR;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 
 namespace Cqrs.Handlers;
 
-public sealed class CreateUserHandler : IRequestHandler<CreateOrUpdateUserRequest, CreateUserResponse>
+public sealed class CreateUserHandler : IRequestHandler<CreateOrUpdateUserCommand, CreateUserResponse>
 {
-    private readonly IMongoCollection<User> _usersCollection;
+    private readonly UsersReadWriteDbContext _usersReadWriteDbContext;
 
-    public CreateUserHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
+    public CreateUserHandler(UsersReadWriteDbContext usersReadWriteDbContext)
     {
-        var mongoClient = new MongoClient(databaseConfiguration.Value.UsersDb!.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.UsersDb.DatabaseName);
-        _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
+        _usersReadWriteDbContext = usersReadWriteDbContext;
     }
     
-    public async Task<CreateUserResponse> Handle(CreateOrUpdateUserRequest createOrUpdateUserRequest, CancellationToken cancellationToken)
+    public async Task<CreateUserResponse> Handle(CreateOrUpdateUserCommand createOrUpdateUserCommand, CancellationToken cancellationToken)
     {
-        var newUser = new User(createOrUpdateUserRequest);
-        
-        await _usersCollection.InsertOneAsync(newUser, cancellationToken: cancellationToken);
+        var newUser = new User(createOrUpdateUserCommand);
 
-        return new CreateUserResponse(newUser.Id!);
+        var user = await _usersReadWriteDbContext.Users.AddAsync(newUser, cancellationToken);
+        await _usersReadWriteDbContext.SaveChangesAsync(cancellationToken);
+
+        return new CreateUserResponse(user.Entity.Id!);
     }
 }

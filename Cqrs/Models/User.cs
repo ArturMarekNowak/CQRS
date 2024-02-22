@@ -1,36 +1,37 @@
-﻿using Cqrs.Models.Requests;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using Cqrs.Models.Queries;
 
 namespace Cqrs.Models;
 
 public sealed class User
 {
-    public User(CreateOrUpdateUserRequest createOrUpdateUserRequest)
+    public User()
     {
-        Name = createOrUpdateUserRequest.Name;
-        Surname = createOrUpdateUserRequest.Surname;
-        Email = createOrUpdateUserRequest.Email;
+        
     }
     
-    public User(UpdateUserRequest updateUserRequest)
+    public User(CreateOrUpdateUserCommand createOrUpdateUserCommand)
     {
-        Id = updateUserRequest.Id;
-        Name = updateUserRequest.CreateOrUpdateUserRequest.Name;
-        Surname = updateUserRequest.CreateOrUpdateUserRequest.Surname;
-        Email = updateUserRequest.CreateOrUpdateUserRequest.Email;
+        Name = createOrUpdateUserCommand.Name;
+        Surname = createOrUpdateUserCommand.Surname;
+        Email = createOrUpdateUserCommand.Email;
+    }
+    
+    public User(UpdateUserCommand updateUserCommand)
+    {
+        Id = updateUserCommand.Id;
+        Name = updateUserCommand.CreateOrUpdateUserCommand.Name;
+        Surname = updateUserCommand.CreateOrUpdateUserCommand.Surname;
+        Email = updateUserCommand.CreateOrUpdateUserCommand.Email;
     }
 
-    public User(UpdateUserFieldsWithIdRequest updateUserFieldsWithIdRequest)
+    public User(UpdateUserFieldsWithIdCommand updateUserFieldsWithIdCommand)
     {
-        Id = updateUserFieldsWithIdRequest.Id;
-        Name = updateUserFieldsWithIdRequest.Name;
-        Surname = updateUserFieldsWithIdRequest.Surname;
-        Email = updateUserFieldsWithIdRequest.Email;
+        Id = updateUserFieldsWithIdCommand.Id;
+        Name = updateUserFieldsWithIdCommand.Name;
+        Surname = updateUserFieldsWithIdCommand.Surname;
+        Email = updateUserFieldsWithIdCommand.Email;
     }
     
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
     public string? Name { get; set; }
     public string? Surname { get; set; }

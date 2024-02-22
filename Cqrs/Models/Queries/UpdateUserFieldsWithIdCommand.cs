@@ -2,16 +2,16 @@
 using Cqrs.Models.Responses;
 using MediatR;
 
-namespace Cqrs.Models.Requests;
+namespace Cqrs.Models.Queries;
 
-public sealed class UpdateUserFieldsWithIdRequest : IRequest<UpdateUserResponse>
+public sealed class UpdateUserFieldsWithIdCommand : IRequest<UpdateUserResponse>
 {
-    public UpdateUserFieldsWithIdRequest(string id, UpdateUserFieldsRequest updateUserFieldsRequest)
+    public UpdateUserFieldsWithIdCommand(string id, UpdateUserFieldsCommand updateUserFieldsCommand)
     {
         Id = id;
-        Name = updateUserFieldsRequest.Name;
-        Surname = updateUserFieldsRequest.Surname;
-        Email = updateUserFieldsRequest.Email;
+        Name = updateUserFieldsCommand.Name;
+        Surname = updateUserFieldsCommand.Surname;
+        Email = updateUserFieldsCommand.Email;
     }
 
     [JsonIgnore]

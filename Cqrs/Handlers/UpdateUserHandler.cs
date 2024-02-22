@@ -1,27 +1,31 @@
-﻿using Cqrs.Models;
-using Cqrs.Models.Requests;
+﻿using Cqrs.Database.Contexts;
+using Cqrs.Models;
+using Cqrs.Models.Queries;
 using Cqrs.Models.Responses;
 using MediatR;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 
 namespace Cqrs.Handlers;
 
-public sealed class UpdateUserHandler : IRequestHandler<UpdateUserRequest, UpdateUserResponse>
+public sealed class UpdateUserHandler : IRequestHandler<UpdateUserCommand, UpdateUserResponse>
 {
-    private static IMongoCollection<User>? _usersCollection;
-    
-    public UpdateUserHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
+    private readonly UsersReadWriteDbContext _usersReadWriteDbContext;
+
+    public UpdateUserHandler(UsersReadWriteDbContext usersReadWriteDbContext)
     {
-        var mongoClient = new MongoClient(databaseConfiguration.Value.UsersDb!.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.UsersDb.DatabaseName);
-        _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
+        _usersReadWriteDbContext = usersReadWriteDbContext;
     }
     
-    public Task<UpdateUserResponse> Handle(UpdateUserRequest request, CancellationToken cancellationToken)
+    public async Task<UpdateUserResponse> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
     {
-        var updatedUser = _usersCollection.FindOneAndReplace(x => x.Id == request.Id, new User(request), cancellationToken: cancellationToken);
-        
-        return Task.FromResult(new UpdateUserResponse(updatedUser));
+        var user = _usersReadWriteDbContext.Users.FirstOrDefault(u => u.Id == command.Id);
+
+        if (user is null)
+            return new UpdateUserResponse(null);
+
+        user = new User(command);
+
+        await _usersReadWriteDbContext.SaveChangesAsync(cancellationToken);
+
+        return new UpdateUserResponse(user);
     }
 }

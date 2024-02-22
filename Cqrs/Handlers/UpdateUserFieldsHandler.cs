@@ -1,50 +1,32 @@
-﻿using System.Text.Json;
+﻿using Cqrs.Database.Contexts;
 using Cqrs.Models;
-using Cqrs.Models.Requests;
+using Cqrs.Models.Queries;
 using Cqrs.Models.Responses;
 using MediatR;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace Cqrs.Handlers;
 
-public class UpdateUserFieldsHandler : IRequestHandler<UpdateUserFieldsWithIdRequest, UpdateUserResponse>
+public class UpdateUserFieldsHandler : IRequestHandler<UpdateUserFieldsWithIdCommand, UpdateUserResponse>
 {
-    private static IMongoCollection<User>? _usersCollection;
-    
-    public UpdateUserFieldsHandler(IOptions<DatabasesConfiguration> databaseConfiguration)
+    private readonly UsersReadWriteDbContext _usersReadWriteDbContext;
+
+    public UpdateUserFieldsHandler(UsersReadWriteDbContext usersReadWriteDbContext)
     {
-        var mongoClient = new MongoClient(databaseConfiguration.Value.UsersDb!.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(databaseConfiguration.Value.UsersDb.DatabaseName);
-        _usersCollection = mongoDatabase.GetCollection<User>(databaseConfiguration.Value.UsersDb.CollectionName);
+        _usersReadWriteDbContext = usersReadWriteDbContext;
     }
     
-    public Task<UpdateUserResponse> Handle(UpdateUserFieldsWithIdRequest request, CancellationToken cancellationToken)
+    public async Task<UpdateUserResponse> Handle(UpdateUserFieldsWithIdCommand command, CancellationToken cancellationToken)
     {
-        var json = JsonSerializer.Serialize(request);
-        var changesDocument = BsonDocument.Parse(json);
+        var user = _usersReadWriteDbContext.Users.FirstOrDefault(u => u.Id == command.Id);
 
-        UpdateDefinition<User> update = null;
-        foreach (var change in changesDocument)
-        {
-            if (update == null)
-            {
-                var builder = Builders<User>.Update;
-                if (change.Name == "Id") continue;
-                update = builder.Set(change.Name, change.Value);
-            }
-            else
-            {
-                update = update.Set(change.Name, change.Value);
-            }
-        }
+        if (user is null)
+            return new UpdateUserResponse(null);
 
-        update = new BsonDocumentUpdateDefinition<User>(new BsonDocument("$set", changesDocument));
-        var options = new FindOneAndUpdateOptions<User>() { ReturnDocument = ReturnDocument.After };
-        
-        var updatedUser = _usersCollection.FindOneAndUpdate<User>(x => x.Id == request.Id, update, options);
-        
-        return Task.FromResult(new UpdateUserResponse(updatedUser));
+        user = new User(command);
+
+        await _usersReadWriteDbContext.SaveChangesAsync(cancellationToken);
+
+        return new UpdateUserResponse(user);
     }
 }

@@ -1,4 +1,6 @@
+using Cqrs.Database.Contexts;
 using Cqrs.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace Cqrs;
@@ -19,11 +21,16 @@ public sealed class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cqrs" });
         });
-        services.Configure<DatabasesConfiguration>(Configuration.GetSection("Databases"));
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(typeof(Startup).Assembly);
         });
+        
+        services.Configure<DatabaseConfiguration>(Configuration.GetSection("ConnectionStrings"));
+        services.AddDbContext<UsersBaseDbContext>(options => 
+            options.UseNpgsql(Configuration.GetValue<string>("ConnectionStrings:ReadWriteConnectionString")));
+        services.AddScoped<UsersReadWriteDbContext>();
+        services.AddScoped<UsersReadOnlyDbContext>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
