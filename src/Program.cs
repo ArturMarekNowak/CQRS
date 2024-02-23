@@ -19,15 +19,18 @@ public sealed class Program
     {
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
-
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        
         try
         {
+            logger.LogInformation("Starting migration...");
             var context = services.GetRequiredService<UsersReadWriteDbContext>();
-            context.Database.Migrate();
+            context.Database.SetCommandTimeout(300);
+            context.Database.MigrateAsync().ConfigureAwait(false);
+            logger.LogInformation("Migration processed succesfully");
         }
         catch (Exception ex)
         {
-            var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogCritical(ex, "An error occurred creating the DB.");
         }
     }
