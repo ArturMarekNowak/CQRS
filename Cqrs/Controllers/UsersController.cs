@@ -25,7 +25,7 @@ public sealed class UsersController : ControllerBase
     }
 
     [HttpGet("users/{id}")]
-    public async Task<IActionResult> GetUserAsync(string id)
+    public async Task<IActionResult> GetUserAsync(int id)
     {
         var request = new GetUserQuery(id);
         var response = await _mediator.Send(request);
@@ -42,7 +42,7 @@ public sealed class UsersController : ControllerBase
     }
     
     [HttpPut("users/{id}")]
-    public async Task<IActionResult> UpdateUserAsync(string id, CreateOrUpdateUserCommand user)
+    public async Task<IActionResult> UpdateUserAsync(int id, CreateOrUpdateUserCommand user)
     {
         var request = new UpdateUserCommand(id, user);
         var response = await _mediator.Send(request);
@@ -60,7 +60,7 @@ public sealed class UsersController : ControllerBase
     }*/
     
     [HttpDelete("users/{id}")]
-    public async Task<IActionResult> DeleteUserAsync(string id)
+    public async Task<IActionResult> DeleteUserAsync(int id)
     {
         var request = new DeleteUserCommand(id); 
         var response = await _mediator.Send(request);

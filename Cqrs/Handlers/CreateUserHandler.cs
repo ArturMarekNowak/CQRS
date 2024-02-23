@@ -22,6 +22,6 @@ public sealed class CreateUserHandler : IRequestHandler<CreateOrUpdateUserComman
         var user = await _usersReadWriteDbContext.Users.AddAsync(newUser, cancellationToken);
         await _usersReadWriteDbContext.SaveChangesAsync(cancellationToken);
 
-        return new CreateUserResponse(user.Entity.Id!);
+        return new CreateUserResponse(user.Entity.Id.Value!);
     }
 }

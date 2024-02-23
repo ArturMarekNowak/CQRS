@@ -32,8 +32,15 @@ public sealed class User
         Email = updateUserFieldsWithIdCommand.Email;
     }
     
-    public string? Id { get; set; }
+    public int? Id { get; set; }
     public string? Name { get; set; }
     public string? Surname { get; set; }
     public string? Email { get; set; }
+
+    public void UpdateNameSurnameAndEmail(UpdateUserCommand updateUserCommand)
+    {
+        Name = updateUserCommand.CreateOrUpdateUserCommand.Name;
+        Surname = updateUserCommand.CreateOrUpdateUserCommand.Surname;
+        Email = updateUserCommand.CreateOrUpdateUserCommand.Email;
+    }
 }

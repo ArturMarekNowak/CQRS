@@ -19,4 +19,9 @@ public sealed class UsersReadWriteDbContext : UsersBaseDbContext
         if(!optionsBuilder.IsConfigured)
             optionsBuilder.UseNpgsql(_databaseConfiguration.ReadWriteConnectionString);
     }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new UsersConfiguration());
+    }
 }

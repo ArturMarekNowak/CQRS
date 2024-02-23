@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Cqrs.Models.Queries;
 
-public sealed record DeleteUserCommand(string Id) : IRequest<DeleteUserResponse>;
+public sealed record DeleteUserCommand(int Id) : IRequest<DeleteUserResponse>;
