@@ -6,7 +6,7 @@ namespace Cqrs.Models.Queries;
 
 public sealed class UpdateUserFieldsWithIdCommand : IRequest<UpdateUserResponse>
 {
-    public UpdateUserFieldsWithIdCommand(string id, UpdateUserFieldsCommand updateUserFieldsCommand)
+    public UpdateUserFieldsWithIdCommand(int id, UpdateUserFieldsCommand updateUserFieldsCommand)
     {
         Id = id;
         Name = updateUserFieldsCommand.Name;
@@ -15,7 +15,7 @@ public sealed class UpdateUserFieldsWithIdCommand : IRequest<UpdateUserResponse>
     }
 
     [JsonIgnore]
-    public string Id { get; }
+    public int Id { get; }
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Name { get; }

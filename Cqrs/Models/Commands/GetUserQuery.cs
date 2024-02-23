@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Cqrs.Models.Commands;
 
-public sealed record GetUserQuery(string Id) : IRequest<GetUserResponse>;
+public sealed record GetUserQuery(int Id) : IRequest<GetUserResponse>;

@@ -22,8 +22,7 @@ public sealed class UpdateUserHandler : IRequestHandler<UpdateUserCommand, Updat
         if (user is null)
             return new UpdateUserResponse(null);
 
-        user = new User(command);
-
+        user.UpdateNameSurnameAndEmail(command);
         await _usersReadWriteDbContext.SaveChangesAsync(cancellationToken);
 
         return new UpdateUserResponse(user);

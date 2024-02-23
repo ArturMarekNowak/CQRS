@@ -16,7 +16,7 @@ public sealed class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Delet
     
     public async Task<DeleteUserResponse> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
     {
-        var userToDelete = _usersReadWriteDbContext.Users.FirstOrDefault(u => u.Id == command.Id);
+        var userToDelete = _usersReadWriteDbContext.Users.FirstOrDefault(u => u.Id!.Value == command.Id);
         
         if(userToDelete is null)
             return new DeleteUserResponse(null);
