@@ -1,4 +1,5 @@
 # CQRS
+[![Build](https://github.com/ArturMarekNowak/CQRS/actions/workflows/workflow.yml/badge.svg)](https://github.com/ArturMarekNowak/CQRS/actions/workflows/workflow.yml/badge.svg) [![Trivy and dockler](https://github.com/ArturMarekNowak/CQRS/actions/workflows/image-scan.yml/badge.svg)](https://github.com/ArturMarekNowak/CQRS/actions/workflows/image-scan.yml/badge.svg) [![CodeFactor](https://www.codefactor.io/repository/github/arturmareknowak/cqrs/badge)](https://www.codefactor.io/repository/github/arturmareknowak/cqrs)
 
 This project is a PoC of queries distribution between replicas of postgres databases
 
