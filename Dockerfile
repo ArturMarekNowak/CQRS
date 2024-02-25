@@ -1,6 +1,6 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8080
 RUN apt-get update
 RUN apt-get upgrade -y
 
