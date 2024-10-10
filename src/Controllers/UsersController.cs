@@ -50,15 +50,6 @@ public sealed class UsersController : ControllerBase
         return response.User is null ? NotFound() : Ok(response.User);
     }
     
-    /*[HttpPatch("users/{id}")]
-    public async Task<IActionResult> UpdateUserFieldsAsync(string id, UpdateUserFieldsRequest user)
-    {
-        var request = new UpdateUserFieldsWithIdRequest(id, user);
-        var response = await _mediator.Send(request);
-        
-        return response.User is null ? NotFound() : Ok(response.User);
-    }*/
-    
     [HttpDelete("users/{id}")]
     public async Task<IActionResult> DeleteUserAsync(int id)
     {

@@ -1,10 +1,8 @@
 ﻿using Cqrs.Database.Contexts;
-using Cqrs.Models;
-using Cqrs.Models.Commands;
+using Cqrs.Models.Queries;
 using Cqrs.Models.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Cqrs.Handlers;
 

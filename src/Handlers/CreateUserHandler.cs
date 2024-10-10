@@ -1,6 +1,6 @@
 ﻿using Cqrs.Database.Contexts;
 using Cqrs.Models;
-using Cqrs.Models.Queries;
+using Cqrs.Models.Commands;
 using Cqrs.Models.Responses;
 using MediatR;
 

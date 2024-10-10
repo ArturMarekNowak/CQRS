@@ -1,4 +1,4 @@
-﻿using Cqrs.Models.Queries;
+﻿using Cqrs.Models.Commands;
 
 namespace Cqrs.Models;
 
@@ -22,14 +22,6 @@ public sealed class User
         Name = updateUserCommand.CreateOrUpdateUserCommand.Name;
         Surname = updateUserCommand.CreateOrUpdateUserCommand.Surname;
         Email = updateUserCommand.CreateOrUpdateUserCommand.Email;
-    }
-
-    public User(UpdateUserFieldsWithIdCommand updateUserFieldsWithIdCommand)
-    {
-        Id = updateUserFieldsWithIdCommand.Id;
-        Name = updateUserFieldsWithIdCommand.Name;
-        Surname = updateUserFieldsWithIdCommand.Surname;
-        Email = updateUserFieldsWithIdCommand.Email;
     }
     
     public int? Id { get; set; }
